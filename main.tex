@@ -1,0 +1,95 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fullpage}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{enumitem}
+\usepackage{mathrsfs}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{sbc-template}
+
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=cyan,
+    urlcolor=cyan}
+
+\newcounter{problem}
+\newcounter{solution}
+
+\pagestyle{plain}
+\thispagestyle{plain}
+
+\newtheorem{theorem}{Teorema}
+\newtheorem{corollary}{Corolário}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definição}
+
+\lstset{
+    language=Python,
+    frame=tb, % draw a frame at the top and bottom of the code block
+    tabsize=4, % tab space width
+    showstringspaces=false, % don't mark spaces in strings
+    commentstyle=\color{mygreen}, % comment color
+    keywordstyle=\color{blue}, % keyword color
+    stringstyle=\color{red}, % string color
+    numbers=left, 
+    numbersep=9pt,
+    backgroundcolor=\color{black!5}, % set backgroundcolor
+    basicstyle=\footnotesize,% basic font setting
+}
+
+\newcommand\Problem{%
+  \stepcounter{problem}%
+  \textbf{Problema \theproblem:}
+  \setcounter{solution}{0}%
+}
+
+\newcommand\TheSolution{%
+  \textbf{Solução:}\\%
+}
+
+\newcommand\ASolution{%
+  \stepcounter{solution}%
+  \textbf{Solução \thesolution:}\\%
+}
+% \parindent0in
+\parskip 1.5em
+
+\title{Curso de Curvas e Superfícies}
+
+\author{Wellington José Leite da Silva\inst{1}}
+
+\address{Escola de Matemática Aplicada da FGV (EMAP), Brazil}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Indrodução}\label{s1}
+
+
+\section{Curvas, Reta tangente e Comprimento de arco}\label{s2}
+
+\begin{definition}
+Uma \textbf{curva parametrizada} em $\mathbb{R}^n$ é uma aplicação $\gamma: I \rightarrow \mathbb{R}^n$ sendo $I \subset \mathbb{R}$ aberto.
+\end{definition}
+
+
+
+\bibliographystyle{sbc}
+%\bibliography{referencias}
+
+\end{document}
