@@ -50,6 +50,8 @@
     basicstyle=\footnotesize,% basic font setting
 }
 
+\newcommand{\furl}[1]{\footnote{\url{#1}}}
+
 \newcommand\Problem{%
   \stepcounter{problem}%
   \textbf{Problema \theproblem:}
@@ -80,12 +82,10 @@
 \maketitle
 
 
-\section*{Indrodução}\label{s1}
-Apresentamos aqui a linha de aprendizado do curso de curvas e superfícies apresentando definições, teoremas e etc. Seguindo principalmente o livro \cite{bookmain} e adicionando sempre que possível, exemplos ilustrativos usando o \textit{sagemath}. As implementações apresentadas aqui também estão presentes num \textit{jupyter-notebook} no \href{https://github.com/wellington36/curvas-superficies/blob/main/Jupyter_auxiliary.ipynb}{github}.
+\section*{Apresentação}\label{s1}
+Apresentamos aqui uma linha de aprendizado do curso de curvas e superfícies apresentando definições, teoremas e etc. Seguindo principalmente o livro \cite{bookmain} e adicionando sempre que possível, exemplos ilustrativos usando o \textit{sagemath}. As implementações, códigos usados para as mesmas  assim como o \textit{Tex} deste documento se concentram no repositório curvas-superficies no github \furl{https://github.com/wellington36/curvas-superficies}.
 
-Para os códigos apresentados aqui, usamos a biblioteca \textit{utils} que está no \href{https://github.com/wellington36/curvas-superficies/blob/main/utils.py}{github} e habilitamos a exibição de LaTeX, como apresentado no \textit{jupyter-notebook} mencionado acima.
-
-\section{Curvas, Reta tangente e Comprimento de arco}\label{s2}
+\section{Curvas regulares}\label{s2}
 
 \begin{definition}
 Uma \textbf{curva parametrizada} $\alpha$ em $\mathbb{R}^n$ é uma aplicação $\gamma: I \rightarrow \mathbb{R}^n$ sendo $I \subset \mathbb{R}$ aberto, da forma
@@ -184,6 +184,53 @@ Se $\gamma: (a, b) \rightarrow \mathbb{R}^n$ é uma c.p.\footnote{curva parametr
 \begin{theorem}
 Toda \textbf{curva regular} pode ser reparametrizada por \textbf{comprimento de arco}.
 \end{theorem}
+
+\section{Curvatura}\label{s3}
+
+\begin{definition}[Função Ângulo]
+Dada uma curva diferenciável $\gamma: I \rightarrow S^1$, onde $S^1$ é o círculo de $\mathbb{R}^2$ com centro na origem e raio 1, diz-se que $\theta: I \rightarrow \mathbb{R}$ é uma \textbf{função-ângulo} de $\gamma$, quando
+
+$$\gamma(s) = (cos(\theta(s)), sen(\theta(s)),\ \forall s \in I$$
+\end{definition}
+
+\begin{definition}[Curvatura]
+Seja $\alpha: I \rightarrow \mathbb{R}$ unit-speed. Designando-se o vetor tangente de $\alpha$ em $s \in I$ por $T(s)$, podemos afirmar que a curva $T(s) = I \rightarrow S^1$ admite função ângulo
+
+$$T(s) = (cos(\theta(s)), sen(\theta(s)),\ \forall s \in I$$
+
+Daí a \textbf{curvatura} de $\alpha$ em $s \in I$ é definida por
+
+$$K(s) = \theta'(s) = det(\alpha'(s), \alpha''(s))$$
+\end{definition}
+
+\begin{ex}[Exemplo curvatura] A curvatura da curva $\alpha(t) = (2\sin(t), 2\cos(t))$, pode ser calculada fazendo
+\begin{lstlisting}
+# define the curve
+curve(t) = (2 * cos(s), 2 * sin(s))
+
+# calculate the derivatives
+curve_t = curve.derivative(t)
+curve_tt = curve_t.derivative(t)
+
+# calculate J(c'(t))
+curve_t_rotation(t) = (- curve_t[1], curve_t[0])
+
+# calculate the curvature
+curvatura = curve_t_rotation.dot_product(curve_tt)/norm(curve_t)^3
+curvatura = curvatura.simplify_full()
+
+# plot
+pretty_results((r"K(s)", curvatura), use_colon=True)
+\end{lstlisting}
+
+\newcommand{\Bold}[1]{\mathbf{#1}}\begin{align*} K(s) :& \quad \frac{1}{2} \\ \end{align*} \\
+
+Em geral, a curvatura de $\alpha(t) = (r \sin(t), r \cos(t)),\ \forall r \in \mathbb{R} - \{0\}$ é $K_\alpha(t) = \frac{1}{r}$
+\end{ex}
+
+%\begin{ex}
+%
+%\end{ex}
 
 \bibliographystyle{sbc}
 \bibliography{referencias}
