@@ -70,7 +70,7 @@
 % \parindent0in
 \parskip 1.5em
 
-\title{Curso de Curvas e Superfícies}
+\title{Curso de Curvas e Superfícies - Parte I}
 
 \author{Wellington José Leite da Silva\inst{1}}
 
@@ -94,7 +94,9 @@
 
 
 \section*{Apresentação}\label{s1}
-Apresentamos aqui uma linha de aprendizado do curso de curvas e superfícies apresentando definições, teoremas e etc. Com intuído de auxiliar o aprendizado aos tópicos apresentados no mesmo e fornecer uma forma de visualização computacional a partir dos exemplos usando \textit{sagemath}. Aqui seguimos principalmente o livro \cite{bookmain} e adicionando sempre que possível, exemplos ilustrativos usando o \textit{sagemath}. As implementações, códigos usados para as mesmas assim como o \textit{Tex} deste documento se concentram no repositório curvas-superficies no github \furl{https://github.com/wellington36/curvas-superficies}.
+Apresentamos aqui uma linha de aprendizado do curso de curvas e superfícies apresentando definições, teoremas, exemplos e etc. Separados em 5 seções sendo elas: Curvas regulares, Difeomorfismo e Reparametrização, Curvatura, Teorema Fundamental de Curvas Plana e Curvas Regulares no $\mathbb{R}^3$. Com intuído de auxiliar o aprendizado aos tópicos apresentados e fornecer uma forma de visualização computacional apresentamos exemplos com códigos em \textit{SageMath}~\cite{sagemath}. Aqui seguimos o livro \cite{bookmain} como principal e o \cite{manfredo} como complementar. Adicionando sempre que possível, exemplos de visualizações em \textit{SageMath}. As implementações, códigos usados para as mesmas assim como o \textit{Tex} deste documento se concentram no repositório curvas-superficies~\furl{https://github.com/wellington36/curvas-superficies} que está disponível abertamente no github.
+
+Todos os códigos apresentados nos exemplos podem ser facilmente generalizados para outros casos, é recomendável como forma de aprendizado rodar os códigos apresentados com outros exemplos de escolha do leitor.
 
 \section{Curvas regulares}\label{s2}
 
@@ -112,11 +114,11 @@ $$\alpha(t) = (1/2 \cos(t) + 1/3 \sin(4 t), 1/2 \sin(t) + 1/3 \cos(4 t))$$
 
 é um exemplo de curva parametrizada diferenciável e podemos visualizar no \textit{sagemath} da seguinte forma
 \begin{lstlisting}
-# curve definition
+# Curve definition
 curve_alpha(t) = (1/2 * cos(t) + 1/3 * sin(4 * t), 
                   1/2 * sin(t) + 1/3 * cos(4 * t))
 
-# plot
+# Plot
 parametric_plot(curve_alpha, (t,0, 2*pi), thickness=2)
 \end{lstlisting}
 
@@ -140,16 +142,20 @@ $$\gamma'(t) = (\gamma'_1 (t), \ldots, \gamma'_n (t))$$
 é chamado \textbf{vetor tangente de $\gamma$} em t
 \end{definition}
 
-\begin{ex}[Vetores tangentes] Usando a mesma curva acima podemos visualizar os vetores tangentes da seguinte forma
+\begin{ex}[Vetores tangentes] Usando a mesma curva acima podemos visualizar os vetores tangentes, aqui usamos o projeto \textit{SageManifolds}~\furl{https://sagemanifolds.obspm.fr/index.html} uma extensão do \textit{SageMath} para geometria diferencial que está incluso no Sage, então podemos visualizar vetores tangentes a uma curva da seguinte forma
 \begin{lstlisting}
+# Define dimention and variables
 M = Manifold(2, 'M')
 X.<x,y> = M.chart()
 
+# Define curve
 c = M.curve([1/2 * cos(t) + 1/3 * sin(4 * t), 
              1/2 * sin(t) + 1/3 * cos(4 * t)], (t, 0, 2*pi))
 
+# Vectors tangent
 v = c.tangent_vector_field() ; v
 
+# Plot
 show(c.plot(thickness=2, aspect_ratio=1) +
      v.plot(chart=X, number_values=30, scale=.2))
 \end{lstlisting}
@@ -175,8 +181,10 @@ $$L_a^b (\alpha) = \int_a^b \| \alpha'(t) \| d t$$
 
 \begin{ex}[Comprimento de arco] O comprimento de arco da curva $\alpha(t) = (2 \cos(t), 2 \sin(t))$ pode ser encontrada fazendo
 \begin{lstlisting}
+# Define curve
 curve_alpha(s) = (2 * cos(s), 2 * sin(s))
 
+# Calculate the derivative
 x = get_vector_arguments(curve_alpha).pop()
 curve_alpha_x = curve_alpha.derivative(x)
     
@@ -186,6 +194,7 @@ assume(t>0)
 s = integrate(norm(curve_alpha_x), (x,0,t))
 s = s.simplify_full()
 
+# Plot equation
 pretty_results((r"\int_0^t || C'(x) || dx", s))
 \end{lstlisting}
 
@@ -231,14 +240,14 @@ $$\alpha(t) = (\cos(t) + \sin(4 t), \sin(t) + \cos(4 t))$$
 podemos reparametrizar digamos pela função $\phi(t) = 2 t + 1$ da seguinte forma, como de costume usando \textit{sagemath}
 
 \begin{lstlisting}
-# curve definition
+# Curve definition
 alpha(t) = (cos(t) + sin(4 * t), sin(t) + cos(4 * t))
 
-# reparametrization
+# Reparametrization
 phi(x) = 2 * x + 1
 beta(t) = alpha(phi(t))
 
-# plot
+# Plot
 parametric_plot(alpha, (t,0, 2*pi), thickness=2)
 parametric_plot(beta, (t,0, 2*pi), thickness=2, color='red')
 \end{lstlisting}
@@ -272,19 +281,19 @@ Toda curva regular $\alpha: I \rightarrow \mathbb{R}^2$ admite reparametrizaçã
 Usaremos aqui a mesma curva usada para calcular o comprimento de arco no caso o círculo de raio 2 $\alpha(t) = (2 \cos(t), 2 \sin(t))$, com ela podemos obter sua parametrização por comprimento de arco fazendo os seguintes passos
 
 \begin{lstlisting}
-# curve definition
+# Curve definition
 alpha(s) = (2 * cos(s), 2 * sin(s))
 
 # Identify curve parameter
 x = get_vector_arguments(alpha).pop()
 
 # Calculate the derivatives
-curva_x = alpha.derivative(x)
+alpha_x = alpha.derivative(x)
     
 # Calculate arc length from 0 to t
 t = var("t")
 assume(t>0)
-comp_arco = integrate(norm(curva_x), (x,0,t))
+comp_arco = integrate(norm(alpha_x), (x,0,t))
 
 t = comp_arco.arguments()[0]
     
@@ -293,14 +302,14 @@ s = var("s")
 param_comp_arco = solve(s == comp_arco,t)[0]
     
 # Replace original parameter in curve 
-curva_subs = alpha(t).subs(param_comp_arco)
-curva_subs = vector_simplify(curva_subs)
+alpha_subs = alpha(t).subs(param_comp_arco)
+alpha_subs = vector_simplify(alpha_subs)
     
 # Reset function argument
-curva_param(s) = tuple(coord for coord in curva_subs)
+alpha_param(s) = tuple(coord for coord in alpha_subs)
 
 # New curve plot
-pretty_results((r"C(s)", curva_param), use_colon=True)
+pretty_results((r"C(s)", alpha_param), use_colon=True)
 \end{lstlisting}
 
 \newcommand{\Bold}[1]{\mathbf{#1}}\begin{align*} C(s) :& \quad s \ {\mapsto}\ \left(2 \, \cos\left(\frac{1}{2} \, s\right),\,2 \, \sin\left(\frac{1}{2} \, s\right)\right) \\ \end{align*}
@@ -328,21 +337,21 @@ $$K(s) = \theta'(s) = det(\alpha'(s), \alpha''(s))$$
 
 \begin{ex}[Exemplo curvatura] A curvatura da curva $\alpha(t) = (2\sin(t), 2\cos(t))$, pode ser calculada fazendo
 \begin{lstlisting}
-# define the curve
+# Curve definition
 curve(t) = (2 * cos(t), 2 * sin(t))
 
-# calculate the derivatives
+# Calculate the derivatives
 curve_t = curve.derivative(t)
 curve_tt = curve_t.derivative(t)
 
-# calculate J(c'(t))
+# Calculate J(c'(t))
 curve_t_rotation(t) = (- curve_t[1], curve_t[0])
 
-# calculate the curvature
+# Calculate the curvature
 curvatura = curve_t_rotation.dot_product(curve_tt)/norm(curve_t)^3
 curvatura = curvatura.simplify_full()
 
-# plot
+# Plot
 pretty_results((r"K(s)", curvatura), use_colon=True)
 \end{lstlisting}
 
@@ -351,7 +360,7 @@ pretty_results((r"K(s)", curvatura), use_colon=True)
 Em geral, a curvatura de $\alpha(t) = (r \sin(t), r \cos(t)),\ \forall r \in \mathbb{R} - \{0\}$ é $K_\alpha(t) = \frac{1}{r}$
 \end{ex}
 
-\section{Diedro de Frenet e Teorema Fundamental}\label{s4}
+\section{Teorema Fundamental de Curvas Plana}\label{s4}
 \begin{theorem}[Função-ângulo diferenciável]
 Seja $\gamma: I \rightarrow S^1$ uma curva diferenciável. Então, $\gamma$ admite uma função ângulo $\theta: I \rightarrow \mathbb{R}$, a qual é diferenciável. Além disso, toda função-ângulo de $\gamma$, a qual é diferenciável, difere de $\theta$ por uma constante.
 \end{theorem}
@@ -441,13 +450,132 @@ parametric_plot(curva_construida, (t,0, 2 * pi), thickness=2)
 \begin{figure}[H]
     \centering
     \includegraphics[scale=.6]{Images/ex4.2.png}
-    \caption{New curve by curvature}
+    \caption{Curva pela curvatura}
     \label{fig:ex4.2}
 \end{figure}
 \end{ex}
 
 \section{Curvas Regulares no $\mathbb{R}^3$}\label{s5}
+\begin{definition}[Curvas no $\mathbb{R}^3$]
+As curvas diferenciáveis no $\mathbb{R}^3$, são definidas de forma análoga ao $\mathbb{R}^2$, isto é, uma \textbf{curva no $\mathbb{R}^3$} é uma aplicação diferenciável de um intervalo I (aberto) em $\mathbb{R}^3$, da forma
 
+$$\alpha(t) = (x(t), y(t), z(t)),\ t \in I$$
+
+Onde x, y e z são diferenciáveis, e a curva é dita \textbf{regular} quando
+
+$$\alpha'(t) = (x'(t), y'(t), z'(t)) \neq (0, 0, 0),\ t \in I$$
+\end{definition}
+
+\begin{ex}[Curva no $\mathbb{R}^3$] A curva
+
+$$\alpha(t) = (2 t \sin(50 t), 3 t \cos(50 t), t^2)$$
+
+É um exemplo de curva regular no $\mathbb{R}^3$
+
+\begin{lstlisting}
+# Curve definition
+alpha(t) = (2 * t * sin(50 * t), 3 * t * cos(50 * t), t^2)
+
+# Plot
+parametric_plot(alpha, (t,0, 2*pi), thickness=2)
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=.5]{Images/ex5.1.png}
+    \caption{Curva no $\mathbb{R}^3$}
+    \label{fig:ex5.1}
+\end{figure}
+\end{ex}
+
+\begin{prop} De forma análoga vale para $\mathbb{R}^3$ que
+\begin{itemize}
+    \item Comprimento de arco é invariável por reparametrização.
+    
+    \item Toda curva regular admite reparametrização \textit{unit-speed} $(\| \alpha'(t) \| = 1)$.
+\end{itemize}
+\end{prop}
+
+\begin{definition}[Curvatura no $\mathbb{R}^3$]
+Dada uma curva $\alpha: I \rightarrow \mathbb{R}$ regular parametrizada por comprimento de arco, a \textbf{curvatura} de $\alpha$ em $s \in I$ é definida como
+
+$$K_\alpha(s) = \| \alpha''(s) \|$$
+\end{definition}
+
+\begin{definition}[2-regular]
+Seja uma curva regular $\alpha: I \rightarrow \mathbb{R}^3$ \textit{unit-speed}, e $K_\alpha(s) > 0, \forall s$, ou seja, $\alpha''(s) \neq 0,\ \forall s$. Então dizemos que $\alpha$ é \textbf{2-regular}.
+\end{definition}
+
+\begin{definition}[Triedro de Frenet]
+Para $\alpha$ 2-regular, seja $T(s) = \alpha'(s)$ (vetor tangente), $N(s) = \frac{\alpha''(s)}{\| \alpha''(s) \|}$ (vetor normal) e $B(s) = T(s) \times N(s)$ (vetor binormal). Com estes vetores estabelecemos um referencial chamado \textbf{Triedro de Frenet} formado pelos vetores $\{ T(s), N(s), B(s) \}$, onde,
+
+$$ \left \{
+\begin{array}{lll}
+    B(s) = T(s) \times N(s) \\
+    N(s) = B(s) \times T(s) \\
+    T(s) = N(s) \times B(s)
+\end{array} \right .
+$$
+\end{definition}
+
+\begin{definition}[Curvatura e Torção]
+Seja uma curva $\alpha$ 2-regular em $\mathbb{R}^3$ não necessariamente parametrizada por comprimento de arco, então a \textbf{curvatura e a torção} de $\alpha$ são definidas respectivamente como
+
+$$K_\alpha(t) = \frac{\| \alpha''(t) \times \alpha'(t) \|}{\| \alpha'(t) \|^3}$$
+
+$$\mathcal{T}(t) = \frac{\langle (\alpha'(t) \times \alpha''(t)), \alpha'''(t) \rangle}{\| \alpha'(t) \times \alpha''(t) \|^2}$$
+\end{definition}
+
+\begin{ex}[Curvatura geral] Podemos calcular a curvatura no $\mathbb{R}^3$ da seguinte forma
+
+\begin{lstlisting}
+# Curve
+alpha(t) = (sin(2 * t), cos(2 * t), t)
+
+# Calculate the derivatives
+alpha_t = alpha.derivative(t)
+alpha_tt = alpha_t.derivative(t)
+    
+# Apply General Curvature Formula
+curvature = norm(alpha_t.cross_product(alpha_tt)) / norm(alpha_t)^3
+curvature = curvature.simplify_full()
+
+pretty_results((r"K(t)", curvature))
+\end{lstlisting}
+
+\newcommand{\Bold}[1]{\mathbf{#1}}\begin{align*} K(t) &= \frac{4}{5} \\ \end{align*}
+\end{ex}
+
+\begin{ex}[Torção]
+Seguindo a mesma ideia do exemplo acima podemos calcular a torção
+
+\begin{lstlisting}
+# Curve
+alpha(t) = (sin(2 * t), cos(2 * t), t)
+
+# Calculate the derivatives
+alpha_t = alpha.derivative(t)
+alpha_tt = alpha_t.derivative(t)
+alpha_ttt = alpha_tt.derivative(t)
+    
+# Get Vector Product of Velocity and Acceleration Vectors
+prod_veloc_acel = alpha_t.cross_product(alpha_tt)
+    
+# Apply General Twist Formula
+torcao = (prod_veloc_acel * alpha_ttt) / norm(prod_veloc_acel)^2
+torcao = torcao.simplify_full()
+
+pretty_results((r"\mathcal{T}(t)", torcao))
+\end{lstlisting}
+
+\newcommand{\Bold}[1]{\mathbf{#1}}\begin{align*} \mathcal{T}(t) &= -\frac{2}{5} \\ \end{align*}
+\end{ex}
+
+\begin{theorem}
+Seja $\alpha: I \rightarrow \mathbb{R}^3$ uma curva 2-regular \textit{unit-speed}, então
+
+$$\alpha \textit{ é plana} \Longleftrightarrow \mathcal{T}(s) \equiv 0,\ \forall s \in I$$
+\end{theorem}
 
 \bibliographystyle{sbc}
 \bibliography{referencias}
