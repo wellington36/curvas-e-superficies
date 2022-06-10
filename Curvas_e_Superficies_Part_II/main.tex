@@ -78,16 +78,12 @@
 
 \date{}
 
-\begin{comment}
-http://150.164.25.15/~rodney/notas_de_aula/geometria_diferencial.pdf
-\end{comment}
-
 \begin{document}
 
 \maketitle
 
 \section*{Apresentação}\label{s1}
-Continuando com o que foi construído na parte I apresentamos aqui uma linha de aprendizado do curso de curvas e superfícies apresentando definições, teoremas, exemplos, etc. Separados em \todo{Welly}{Adicionar as seções}. 
+Continuando com o que foi construído na parte I apresentamos aqui uma linha de aprendizado do curso de curvas e superfícies apresentando definições, teoremas, exemplos, etc. Separados em Superfícies abordando definições e visualizações, Topologia abordando a teoria e primeira e segunda formas fundamentais onde é abordado a teoria e implementação.
 
 Com intuído de auxiliar o aprendizado aos tópicos apresentados e fornecer uma forma de visualização computacional apresentamos exemplos com códigos em \textit{SageMath}~\cite{sagemath}. Aqui seguimos o livro \cite{bookmain} como principal e o \cite{manfredo} como complementar. Adicionando sempre que possível, exemplos de visualizações em \textit{SageMath}. As implementações, códigos usados para as mesmas assim como o \textit{Tex} deste documento se concentram no repositório curvas-superficies~\furl{https://github.com/wellington36/curvas-superficies} que está disponível abertamente no github.
 
@@ -208,6 +204,7 @@ $$d\varphi_p: \mathbb{R}^3 \rightarrow \mathbb{R}$$
 \begin{prop}
 A \textbf{imagem inversa} de um valor regular de uma função diferenciável definida em um aberto do $\mathbb{R}^3$, quando não vazia, é uma superfície regular.
 \end{prop}
+
 
 \section*{Topologia}\label{s3}
 \begin{definition}[Bola aberta]
@@ -331,6 +328,206 @@ Dados $X \subset \mathbb{R}^n$ e $Y \subset \mathbb{R}^m$ uma bijeção $f: X \r
 \end{definition}
 
 \section*{Primeira Forma Fundamental}\label{s4}
+\begin{theorem}[Teorema da função inversa]
+Seja $F: U \subset \mathbb{R}^n \rightarrow \mathbb{R}^m$ diferenciável e $dF_p : \mathbb{R}^n \rightarrow \mathbb{R}^m$ isomorfismo. Então, existem abertos $V \subset U$ e $W \subset F(U)$, tais que se $p \in V$, então $F(p) \in W$ e $F|_v : V \rightarrow W$ é um difeomorfismo.
+\end{theorem}
+
+\begin{definition}[Vetor tangente]
+Dado um ponto p de uma superfície regular S, diz-se que $w \in \mathbb{R}^n$ é um \textbf{vetor tangente} a S em p, se existe uma curva $\alpha: (- \varepsilon, \varepsilon) \rightarrow S,\ \varepsilon > 0$, tal que, $\alpha(0) = p$ e $\alpha'(0) = w$.
+\end{definition}
+
+\begin{theorem}[Primeira forma fundamental]
+Seja S uma superfície regular e $p \in S$. A \textbf{primeira forma fundamental} de S em p
+
+$$I_p : T_p S \rightarrow \mathbb{R}$$
+
+é a forma quadrática associada à restrição do produto interno canônico de $\mathbb{R}^3$ ao plano tangente de S em p, $T_p S$, isto é
+
+$$I_p(w) = \langle w,w \rangle^2 = \| w \|^2,\ w \in T_p S$$
+
+Dada uma parametrização $X: U \subset \mathbb{R}^2 \rightarrow X(U) \subset S$ de S, as funções
+
+
+\begin{equation*}
+    E(u, v) = \langle X_u(u, v), X_u(u, v) \rangle
+\end{equation*}
+
+\begin{equation*}
+    F(u, v) = \langle X_u(u, v), X_v(u, v) \rangle
+\end{equation*}
+
+\begin{equation*}
+    G(u, v) = \langle X_v(u, v), X_v(u, v) \rangle
+\end{equation*}
+
+São os coeficientes da primeira forma fundamental de S relativos a X, isto é, a matriz de $I_{X(u, v)}$ com respeito a base $\{X_u, X_v\}$, de $T_{X(u, v)} S$
+
+$$
+\begin{bmatrix}
+E & F\\
+F & G
+\end{bmatrix}
+$$
+
+E $\forall w = a X_u(u, v) + b X_v(u, v) \in T_{X(u, v)} S$ tem-se
+
+$$I_{X_{(u, v)}}(w) = a^2 E(u, v) + 2 a b F(u, v) + b^2 G(u, v)$$
+\end{theorem}
+
+\vspace{3mm}
+
+\begin{ex}[A primeira forma numa  superfície]
+Em \textit{sagemath} vamos calcular os coeficientes da primeira forma fundamental de uma superfície enneper.
+
+\begin{lstlisting}
+# Define a cart (for exemple enneper)
+card(u,v) = (u - (u^3)/3 + u*v^2, v - (v^3)/3 + v*u^2, u^2 - v^2)
+
+# Partial derivatives
+x_u = derivative(card, u)
+x_v = derivative(card, v)
+
+# First fundamental form
+E = x_u.dot_product(x_u)
+F = x_u.dot_product(x_v)
+G = x_v.dot_product(x_v)
+
+# Simplificacao
+E = E.full_simplify().canonicalize_radical()
+F = F.full_simplify().canonicalize_radical()
+G = G.full_simplify().canonicalize_radical()
+
+pretty_results((r"E", E), (r"F", F), (r"G", G))
+\end{lstlisting}
+
+\begin{align*} E &= u^{4} + v^{4} + 2 \, {\left(u^{2} + 1\right)} v^{2} + 2 \, u^{2} + 1 \\ F &= 0 \\ G &= u^{4} + v^{4} + 2 \, {\left(u^{2} + 1\right)} v^{2} + 2 \, u^{2} + 1 \\ \end{align*} \\
+\end{ex}
+
+\begin{theorem}[Área]
+Seguindo a primeira forma fundamental a área de uma superfície S um certo conjunto D é dada por
+
+\begin{equation*}
+    A_S(D) = \int_D \sqrt{E G - F^2} d u d v
+\end{equation*}
+\end{theorem}
+
+\section*{Segunda forma fundamental}
+\label{s12}
+\begin{definition}[Campo]
+Dada uma parametrização regular S, chama-se \textbf{campo} em S toda aplicação $f: S \to \mathbb{R}^3$
+\end{definition}
+
+\begin{prop} Um campo é dito:
+\begin{itemize}
+    \item unitário, se $\| f(p) \| = 1,\ \forall p \in S$.
+    
+    \item tangente, se $f(p) \in T_p S,\ \forall p \in S$.
+    
+    \item normal, se $f(p) \in T_p S^\perp,\ \forall p \in S$.
+\end{itemize}
+\end{prop}
+
+\begin{definition}[vetor normal]
+Sendo S uma superfície, seja 
+
+$$X: U \subset \mathbb{R}^2 \to X(U) \subset S$$
+
+$\forall p \in S$ seja $q = X^{-1}(p)$, podemos então definir o vetor normal em S no ponto p como $N: X(U) \to \mathbb{R}^2$, como
+
+\begin{equation*}
+    N(p) = \frac{X_u (q) \times X_v (q)}{\| X_u (q) \times X_v (q) \|}
+\end{equation*}
+\end{definition}
+
+\begin{definition}[Superfície orientável]
+Uma superfície regular S é \textbf{orientável} quando se pode definir um campo normal unitário e diferenciável.
+\end{definition}
+
+\begin{definition}[Atlas coerente]
+Dada duas parametrizações de A, X e Y e p no conjunto imagem de ambas, então $Y^{-1} \circ X$ tem determinante jacobiano maior que 0 em $X^{-1}(p)$.
+\end{definition}
+
+\begin{theorem}
+Uma superfície regular S é \textbf{orientável} se, e só se, admite um atlas coerente.
+\end{theorem}
+
+\begin{definition}[Aplicação normal de Gauss]
+Seja S uma superfície regular orientável, N campo normal unitário diferenciável em S, isto é, $\| N(p)\| = 1, \forall p \in S$
+
+\begin{equation*}
+    N: S \text{(superfície)} \to E_1 \text{(esfera de raio 1)}
+\end{equation*}
+
+é dita uma \textbf{aplicação normal de Gauss}, $\forall p \in S,\ T_p S = \{ N(p) \}^\perp = T_{N(p)} E_1$, temos $dN_p$ é um operador linear de $T_p S$. 
+\end{definition}
+
+\begin{theorem}[Segunda forma fundamental]
+Seja S uma superfície regular orientável, N aplicação normal de Gauss de S
+
+\begin{equation*}
+    I_p(w) \langle - dN_p w, w \rangle,\ w \in T_p S
+\end{equation*}
+
+Dado uma parametrização
+
+\begin{equation*}
+    \alpha: (- \varepsilon, \varepsilon) \to V \subset S
+\end{equation*}
+
+tal que $\alpha(0) = p$ e $\alpha'(0) = w$, temos que, $\forall s \in (- \varepsilon, \varepsilon),\ \langle N(\alpha(s)), \alpha'(s) \rangle = 0$, então
+
+\begin{equation*}
+    \langle -d N_p w, w \rangle = \langle N(p), \alpha''(0) \rangle
+\end{equation*}
+
+e os coeficientes da segunda forma são
+
+\begin{align*}
+    e(u, v) &= \langle - dN_p X_u, X_u \rangle = \langle N \circ X, X_uu \rangle \\
+    f(u, v) &= \langle - dN_p X_u, X_v \rangle = \langle N \circ X, X_uv \rangle \\
+    g(u, v) &= \langle - dN_p X_v, X_v \rangle = \langle N \circ X, X_vv \rangle
+\end{align*}
+\end{theorem}
+
+\begin{ex}[A segunda forma numa superfície]
+Em \textit{sagemath} vamos calcular os coeficientes da segunda forma fundamental de um toro.
+
+\begin{lstlisting}
+# Define the cart (for exemple toro)
+a = var('a')
+
+cart(u,v) = ((a + cos(u))*cos(v), (a + cos(u))*sin(v), sin(u))
+
+# Find partial derivatives
+x_u = derivative(cart, u)
+x_v = derivative(cart, v)
+
+x_uu = derivative(x_u, u)
+x_uv = derivative(x_u, v)
+x_vv = derivative(x_v, v)
+
+# Find normal vector
+normal = x_u.cross_product(x_v)(u,v)
+    
+normal_unit = normal / normal.norm()
+normal_unit = vector_simplify(normal_unit, 
+                              use_canonical_form=True)
+
+# Second fundamental form
+l = normal_unit.dot_product(x_uu)
+m = normal_unit.dot_product(x_uv)
+n = normal_unit.dot_product(x_vv)
+
+# Simplify
+l = l.full_simplify().canonicalize_radical()
+m = m.full_simplify().canonicalize_radical()
+n = n.full_simplify().canonicalize_radical()
+
+pretty_results((r"L", l), (r"M", m), (r"N", n))
+\end{lstlisting}
+
+\begin{align*} L &= 1 \\ M &= 0 \\ N &= a \cos\left(u\right) + \cos\left(u\right)^{2} \\ \end{align*} \\
+\end{ex}
 
 \bibliographystyle{sbc}
 \bibliography{referencias}
