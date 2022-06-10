@@ -82,14 +82,14 @@
 
 \maketitle
 
-\section*{Apresentação}\label{s1}
+\section*{Apresentação}
 Continuando com o que foi construído na parte I apresentamos aqui uma linha de aprendizado do curso de curvas e superfícies apresentando definições, teoremas, exemplos, etc. Separados em Superfícies abordando definições e visualizações, Topologia abordando a teoria e primeira e segunda formas fundamentais onde é abordado a teoria e implementação.
 
 Com intuído de auxiliar o aprendizado aos tópicos apresentados e fornecer uma forma de visualização computacional apresentamos exemplos com códigos em \textit{SageMath}~\cite{sagemath}. Aqui seguimos o livro \cite{bookmain} como principal e o \cite{manfredo} como complementar. Adicionando sempre que possível, exemplos de visualizações em \textit{SageMath}. As implementações, códigos usados para as mesmas assim como o \textit{Tex} deste documento se concentram no repositório curvas-superficies~\furl{https://github.com/wellington36/curvas-superficies} que está disponível abertamente no github.
 
 Todos os códigos apresentados nos exemplos podem ser facilmente generalizados para outros casos, é recomendável como forma de aprendizado rodar os códigos apresentados com outros exemplos de escolha do leitor.
 
-\section{Superfícies}\label{s2}
+\section{Superfícies}
 \begin{definition}[Superfície]
 O subconjunto S de $\mathbb{R}^3$ é uma \textbf{superfície} se $\forall p \in S$, existe um aberto U em $\mathbb{R}^2$ e um aberto W em $\mathbb{R}^3$ contendo p tal que $S \cap W$ é \textbf{homeomorfo} a U.
 \end{definition}
@@ -205,8 +205,12 @@ $$d\varphi_p: \mathbb{R}^3 \rightarrow \mathbb{R}$$
 A \textbf{imagem inversa} de um valor regular de uma função diferenciável definida em um aberto do $\mathbb{R}^3$, quando não vazia, é uma superfície regular.
 \end{prop}
 
+%\subsection*{Exemplos de superficies}
+%\begin{ex}[]
 
-\section*{Topologia}\label{s3}
+%\end{ex}
+
+\section*{Topologia}
 \begin{definition}[Bola aberta]
 Dado $a \in \mathbb{R}^n$ e um número real $r > 0$, a \textbf{bola aberta} de centro a e raio r em $\mathbb{R}^n$ é o conjunto
 
@@ -327,7 +331,7 @@ Dados $X \subset \mathbb{R}^n$ e $Y \subset \mathbb{R}^m$ uma bijeção $f: X \r
 É uma aplicação que preserva uma estrutura e pode ser revertida com uma aplicação inversa.
 \end{definition}
 
-\section*{Primeira Forma Fundamental}\label{s4}
+\section*{Primeira Forma Fundamental}
 \begin{theorem}[Teorema da função inversa]
 Seja $F: U \subset \mathbb{R}^n \rightarrow \mathbb{R}^m$ diferenciável e $dF_p : \mathbb{R}^n \rightarrow \mathbb{R}^m$ isomorfismo. Então, existem abertos $V \subset U$ e $W \subset F(U)$, tais que se $p \in V$, então $F(p) \in W$ e $F|_v : V \rightarrow W$ é um difeomorfismo.
 \end{theorem}
@@ -411,8 +415,47 @@ Seguindo a primeira forma fundamental a área de uma superfície S um certo conj
 \end{equation*}
 \end{theorem}
 
+\begin{ex}[Área de uma superfície num intervalo de u e v]
+Vamos usar o teorema acima para calcular área de uma superfície (no caso vamos usar um toro) dado os intervalos de u e v, primeiro encontramos os coeficientes da primeira forma e depois aplicamos o Teorema 7.
+
+\begin{lstlisting}
+# Define the cart (for exemple toro)
+a = var('a')
+
+card(u,v) = ((a + cos(u))*cos(v), (a + cos(u))*sin(v), sin(u))
+
+# Set interval to u and v
+I = [(0, 2 * pi), (0, 2 * pi)]
+
+# Partial derivatives
+x_u = derivative(card, u)
+x_v = derivative(card, v)
+
+# First fundamental form
+E = x_u.dot_product(x_u)
+F = x_u.dot_product(x_v)
+G = x_v.dot_product(x_v)
+
+# Simplify
+E = E.full_simplify().canonicalize_radical()
+F = F.full_simplify().canonicalize_radical()
+G = G.full_simplify().canonicalize_radical()
+
+# Using theorem to find area
+A = integrate(integrate(E * G - F^2, u, I[0][0], I[0][1]), 
+              v, I[1][0], I[1][1])
+
+A = A.full_simplify()
+
+# plot
+pretty_results((r"Area", A))
+\end{lstlisting}
+
+\begin{align*} Area &= 4 \, \pi^{2} a^{2} + 2 \, \pi^{2} \\ \end{align*}
+\end{ex}
+
 \section*{Segunda forma fundamental}
-\label{s12}
+
 \begin{definition}[Campo]
 Dada uma parametrização regular S, chama-se \textbf{campo} em S toda aplicação $f: S \to \mathbb{R}^3$
 \end{definition}
